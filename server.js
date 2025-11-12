@@ -4,6 +4,14 @@ import path from "path";
 import { fileURLToPath } from "url";
 import QRCode from "qrcode";
 import fs from "fs";
+import { v2 as cloudinary } from 'cloudinary';
+
+cloudinary.config({
+  cloud_name: 'TU_CLOUD_NAME',
+  api_key: 'TU_API_KEY',
+  api_secret: 'TU_API_SECRET'
+});
+
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -37,7 +45,12 @@ app.get("/", async (req, res) => {
 app.get("/subir", (req, res) => res.render("subir"));
 
 // endpoint de subida
-app.post("/upload", upload.single("foto"), (req, res) => res.redirect("/"));
+app.post("/upload", upload.single("foto"), async (req, res) => {
+  const result = await cloudinary.uploader.upload(req.file.path);
+  console.log("Foto subida:", result.secure_url);
+  res.redirect("/");
+});
+
 
 // lista de fotos
 app.get("/fotos", (req, res) => {
