@@ -21,21 +21,20 @@ async function cargarFotos() {
       return;
     }
 
-    // Mostrar las fotos en orden inverso (las más nuevas primero)
-    fotos.reverse().forEach((url) => {
+    fotos.reverse().forEach((url, index) => {
       const contenedor = document.createElement("div");
       contenedor.classList.add("foto-container");
 
       const img = document.createElement("img");
       img.src = url;
-      img.alt = "Foto del cumple";
+      img.alt = `Foto ${index + 1} del cumple`;
 
       // 🔹 Botón para descargar individualmente
       const botonDescargar = document.createElement("button");
       botonDescargar.classList.add("descargar-btn");
       botonDescargar.textContent = "⬇ Descargar esta foto";
 
-      botonDescargar.onclick = () => descargarFoto(url);
+      botonDescargar.onclick = () => descargarFoto(url, index);
 
       contenedor.appendChild(img);
       contenedor.appendChild(botonDescargar);
@@ -48,20 +47,19 @@ async function cargarFotos() {
 }
 
 // 🔹 Descargar una sola foto con nombre único
-function descargarFoto(url) {
+function descargarFoto(url, index) {
   fetch(url)
     .then((response) => response.blob())
     .then((blob) => {
       const enlace = document.createElement("a");
-      const nombreUnico =
-        "foto_" +
-        new Date().toISOString().replace(/[:.]/g, "-") +
-        "_" +
-        Math.floor(Math.random() * 1000) +
-        ".jpg";
+      const fecha = new Date().toISOString().split("T")[0];
+      const nombreUnico = `foto_${fecha}_${index + 1}_${Math.floor(
+        Math.random() * 10000
+      )}.jpg`;
       enlace.href = URL.createObjectURL(blob);
       enlace.download = nombreUnico;
       enlace.click();
+      URL.revokeObjectURL(enlace.href);
     })
     .catch((err) => console.error("Error al descargar la imagen:", err));
 }
@@ -77,22 +75,22 @@ async function descargarTodas() {
       return;
     }
 
-    for (const url of fotos) {
+    for (let i = 0; i < fotos.length; i++) {
+      const url = fotos[i];
       await new Promise((resolve) => {
         fetch(url)
           .then((res) => res.blob())
           .then((blob) => {
             const enlace = document.createElement("a");
-            const nombreUnico =
-              "foto_" +
-              new Date().toISOString().replace(/[:.]/g, "-") +
-              "_" +
-              Math.floor(Math.random() * 1000) +
-              ".jpg";
+            const fecha = new Date().toISOString().split("T")[0];
+            const nombreUnico = `foto_${fecha}_${i + 1}_${Math.floor(
+              Math.random() * 10000
+            )}.jpg`;
             enlace.href = URL.createObjectURL(blob);
             enlace.download = nombreUnico;
             enlace.click();
-            setTimeout(resolve, 500); // 🔹 pausa leve entre descargas
+            URL.revokeObjectURL(enlace.href);
+            setTimeout(resolve, 400); // pequeña pausa entre descargas
           })
           .catch((err) => {
             console.error("Error descargando una foto:", err);
