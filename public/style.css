@@ -280,7 +280,7 @@ a:hover {
 
   /* 🔹 Espacio entre la cara y el formulario */
   form {
-    margin-top: 180px; /* 🔸 Baja el bloque del formulario */
+    margin-top: 250px; /* 🔸 Baja el bloque del formulario */
   }
 
   input[type="file"] {
