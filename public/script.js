@@ -1,20 +1,10 @@
-// Mostrar QR generado en el servidor (usando Pug variable global o fetch)
 document.addEventListener("DOMContentLoaded", async () => {
-  const qrImg = document.getElementById("qr");
-  if (qrImg) {
-    // Si el servidor renderiza el QR en la vista (index.pug), este paso no es necesario
-    try {
-      const res = await fetch(window.location.href);
-      const html = await res.text();
-      const match = html.match(/data:image\/png;base64,[A-Za-z0-9+/=]+/);
-      if (match) qrImg.src = match[0];
-    } catch (e) {
-      console.warn("No se pudo cargar el QR automáticamente:", e);
-    }
-  }
-
-  // Mostrar fotos de la galería
   await cargarFotos();
+
+  const botonDescargarTodo = document.getElementById("descargarTodo");
+  if (botonDescargarTodo) {
+    botonDescargarTodo.addEventListener("click", descargarTodas);
+  }
 });
 
 async function cargarFotos() {
@@ -31,13 +21,47 @@ async function cargarFotos() {
       return;
     }
 
-    fotos.reverse().forEach(nombre => {
+    fotos.reverse().forEach((url) => {
+      const cont = document.createElement("div");
+      cont.className = "foto-container";
+
       const img = document.createElement("img");
-      img.src = nombre;
+      img.src = url;
       img.alt = "Foto del cumple";
-      galeria.appendChild(img);
+
+      const boton = document.createElement("button");
+      boton.className = "descargar-btn";
+      boton.textContent = "⬇";
+      boton.addEventListener("click", () => descargarFoto(url));
+
+      cont.appendChild(img);
+      cont.appendChild(boton);
+      galeria.appendChild(cont);
     });
   } catch (error) {
     console.error("Error cargando fotos:", error);
+  }
+}
+
+function descargarFoto(url) {
+  const link = document.createElement("a");
+  link.href = url;
+  link.download = "foto_cumple.jpg";
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+}
+
+async function descargarTodas() {
+  try {
+    const res = await fetch("/fotos");
+    const fotos = await res.json();
+
+    for (const url of fotos) {
+      descargarFoto(url);
+      await new Promise(r => setTimeout(r, 300)); // leve pausa
+    }
+  } catch (e) {
+    console.error("Error descargando todas las fotos:", e);
   }
 }
