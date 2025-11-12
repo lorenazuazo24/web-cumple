@@ -33,7 +33,7 @@ async function cargarFotos() {
 
     fotos.reverse().forEach(nombre => {
       const img = document.createElement("img");
-      img.src = `/uploads/${nombre}`;
+      img.src = nombre;
       img.alt = "Foto del cumple";
       galeria.appendChild(img);
     });

@@ -57,10 +57,22 @@ app.post("/upload", upload.single("foto"), async (req, res) => {
 
 
 // lista de fotos
-app.get("/fotos", (req, res) => {
-  const dir = path.join(__dirname, "public/uploads");
-  const files = fs.existsSync(dir) ? fs.readdirSync(dir) : [];
-  res.json(files);
+// lista de fotos en Cloudinary
+app.get("/fotos", async (req, res) => {
+  try {
+    const resources = await cloudinary.api.resources({
+      type: "upload",
+      prefix: "",       // opcional: podés filtrar por carpeta si usás carpetas
+      max_results: 30   // cuántas querés listar
+    });
+
+    const urls = resources.resources.map(r => r.secure_url);
+    res.json(urls);
+  } catch (error) {
+    console.error("Error al obtener imágenes de Cloudinary:", error);
+    res.json([]);
+  }
 });
+
 
 app.listen(PORT, () => console.log(`Servidor corriendo en http://localhost:${PORT}`));
