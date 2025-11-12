@@ -1,12 +1,53 @@
 document.addEventListener("DOMContentLoaded", async () => {
   await cargarFotos();
 
+  const form = document.getElementById("formSubir");
+  if (form) {
+    form.addEventListener("submit", subirFoto);
+  }
+
   const botonDescargarTodo = document.getElementById("descargarTodo");
   if (botonDescargarTodo) {
     botonDescargarTodo.addEventListener("click", descargarTodas);
   }
 });
 
+async function subirFoto(e) {
+  e.preventDefault();
+  const form = e.target;
+  const inputFile = form.querySelector('input[type="file"]');
+  const estado = document.getElementById("estadoSubida");
+  const boton = form.querySelector("button");
+
+  if (!inputFile.files.length) return alert("Seleccioná una foto primero 😄");
+
+  const formData = new FormData(form);
+  estado.textContent = "📤 Subiendo foto...";
+  boton.disabled = true;
+
+  try {
+    const res = await fetch("/upload", { method: "POST", body: formData });
+    const data = await res.json();
+
+    if (data.success) {
+      estado.textContent = "✅ Foto subida con éxito 🎉";
+      inputFile.value = "";
+      setTimeout(() => {
+        estado.textContent = "";
+        cargarFotos();
+      }, 2000);
+    } else {
+      estado.textContent = "❌ Error al subir la foto";
+    }
+  } catch (error) {
+    console.error(error);
+    estado.textContent = "❌ Error al subir la foto";
+  } finally {
+    boton.disabled = false;
+  }
+}
+
+// 🔹 Cargar galería
 async function cargarFotos() {
   const galeria = document.getElementById("galeria");
   if (!galeria) return;
@@ -39,67 +80,49 @@ async function cargarFotos() {
       galeria.appendChild(contenedor);
     });
   } catch (error) {
-    console.error("❌ Error cargando fotos:", error);
     galeria.innerHTML = "<p>Error al cargar las fotos 😢</p>";
   }
 }
 
-// 🔹 Descargar una foto con nombre único
+// 🔹 Descargar individual
 function descargarFoto(url, index) {
   fetch(url)
-    .then((response) => response.blob())
+    .then((r) => r.blob())
     .then((blob) => {
-      const enlace = document.createElement("a");
-      const fecha = new Date().toISOString().split("T")[0];
-      const nombreUnico = `foto_${fecha}_${index + 1}_${Math.floor(
+      const a = document.createElement("a");
+      const nombre = `foto_${new Date().toISOString().split("T")[0]}_${index + 1}_${Math.floor(
         Math.random() * 10000
       )}.jpg`;
-      enlace.href = URL.createObjectURL(blob);
-      enlace.download = nombreUnico;
-      enlace.click();
-      URL.revokeObjectURL(enlace.href);
-    })
-    .catch((err) => console.error("Error al descargar imagen:", err));
+      a.href = URL.createObjectURL(blob);
+      a.download = nombre;
+      a.click();
+      URL.revokeObjectURL(a.href);
+    });
 }
 
-// 🔹 Descargar todas las fotos
+// 🔹 Descargar todas
 async function descargarTodas() {
-  try {
-    const res = await fetch("/fotos");
-    const fotos = await res.json();
+  const res = await fetch("/fotos");
+  const fotos = await res.json();
+  if (!fotos.length) return alert("No hay fotos para descargar 😢");
 
-    if (!fotos.length) {
-      alert("No hay fotos para descargar 😢");
-      return;
-    }
-
-    for (let i = 0; i < fotos.length; i++) {
-      const url = fotos[i];
-      await new Promise((resolve) => {
-        fetch(url)
-          .then((res) => res.blob())
-          .then((blob) => {
-            const enlace = document.createElement("a");
-            const fecha = new Date().toISOString().split("T")[0];
-            const nombreUnico = `foto_${fecha}_${i + 1}_${Math.floor(
-              Math.random() * 10000
-            )}.jpg`;
-            enlace.href = URL.createObjectURL(blob);
-            enlace.download = nombreUnico;
-            enlace.click();
-            URL.revokeObjectURL(enlace.href);
-            setTimeout(resolve, 400);
-          })
-          .catch((err) => {
-            console.error("Error descargando una foto:", err);
-            resolve();
-          });
-      });
-    }
-
-    alert("✅ Todas las fotos fueron descargadas correctamente 🎉");
-  } catch (e) {
-    console.error("Error descargando todas las fotos:", e);
-    alert("❌ Error al intentar descargar las fotos");
+  for (let i = 0; i < fotos.length; i++) {
+    await new Promise((resolve) => {
+      fetch(fotos[i])
+        .then((r) => r.blob())
+        .then((blob) => {
+          const a = document.createElement("a");
+          const nombre = `foto_${new Date().toISOString().split("T")[0]}_${i + 1}_${Math.floor(
+            Math.random() * 10000
+          )}.jpg`;
+          a.href = URL.createObjectURL(blob);
+          a.download = nombre;
+          a.click();
+          URL.revokeObjectURL(a.href);
+          setTimeout(resolve, 400);
+        })
+        .catch(() => resolve());
+    });
   }
+  alert("✅ Todas las fotos fueron descargadas 🎉");
 }

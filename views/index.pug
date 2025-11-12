@@ -9,9 +9,10 @@ html(lang="es")
     h1 🎉 Cumple Romi 🎉
 
     // 🔹 Formulario para subir foto
-    form(action="/upload", method="POST", enctype="multipart/form-data")
+    form#formSubir
       input(type="file", name="foto", accept="image/*", required)
       button(type="submit") ⬆ Subir foto
+      p#estadoSubida
 
     // 🔹 Galería de imágenes
     h2 Galería

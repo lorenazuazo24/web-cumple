@@ -30,26 +30,26 @@ const storage = multer.diskStorage({
 });
 const upload = multer({ storage });
 
-// 🔹 Página principal (galería + subida)
+// Página principal (subida + galería)
 app.get("/", async (req, res) => {
   res.render("index");
 });
 
-// 🔹 Subir imagen
+// Subida de fotos
 app.post("/upload", upload.single("foto"), async (req, res) => {
   try {
     const result = await cloudinary.uploader.upload(req.file.path, {
       folder: "cumple-romi"
     });
     console.log("✅ Foto subida:", result.secure_url);
-    res.redirect("/");
+    res.status(200).json({ success: true, url: result.secure_url });
   } catch (error) {
-    console.error("❌ Error subiendo imagen a Cloudinary:", error);
-    res.status(500).send("Error al subir imagen");
+    console.error("❌ Error subiendo imagen:", error);
+    res.status(500).json({ success: false });
   }
 });
 
-// 🔹 Obtener fotos
+// Listado de fotos
 app.get("/fotos", async (req, res) => {
   try {
     const resources = await cloudinary.api.resources({
@@ -60,7 +60,7 @@ app.get("/fotos", async (req, res) => {
     const urls = resources.resources.map((r) => r.secure_url);
     res.json(urls);
   } catch (error) {
-    console.error("Error al obtener imágenes de Cloudinary:", error);
+    console.error("Error al obtener imágenes:", error);
     res.json([]);
   }
 });
