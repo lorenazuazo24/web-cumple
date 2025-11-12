@@ -31,7 +31,7 @@ async function cargarFotos() {
 
       const boton = document.createElement("button");
       boton.className = "descargar-btn";
-      boton.textContent = "⬇";
+      boton.textContent = "⬇ Descargar esta foto";
       boton.addEventListener("click", () => descargarFoto(url));
 
       cont.appendChild(img);
