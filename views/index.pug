@@ -5,18 +5,30 @@ html(lang="es")
     meta(name="viewport", content="width=device-width, initial-scale=1.0")
     title 🎂 Cumple 40 Romi 🎂
     link(rel="stylesheet", href="/style.css")
+
   body
     h1 🎉 Cumple 40 Romi 🎉
 
-    // 🔹 Formulario para subir foto
-    form#formSubir
+    // 🔹 FORMULARIO DE SUBIDA
+    form(action="/upload", method="POST", enctype="multipart/form-data")
       input(type="file", name="foto", accept="image/*", required)
-      button(type="submit") ⬆ Subi tus foto
-      p#estadoSubida
+      button(type="submit") ↑ Subí tu foto
+      #estadoSubida
 
-    // 🔹 Galería de imágenes
+    // 🔹 TEMAS QUE NO PUEDEN FALTAR (ANTES DE LA GALERÍA)
+    .temas-wrapper
+      h2.temas-titulo 🎵🎵 TEMAS QUE NO PUEDEN FALTAR 🎵🎵
+
+      form#formTemas(action="/agregar-tema", method="POST")
+        input(type="text", name="tema", placeholder="Escribí un tema...", required)
+        button(type="submit") ➕ Agregar tema
+
+      ul#listaTemas
+
+    // 🔹 GALERÍA
     h2 Galería
     button#descargarTodo Descargar todas las fotos 📦
     #galeria.galeria
 
+    script(src="/temas.js")
     script(src="/script.js")

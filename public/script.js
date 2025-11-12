@@ -1,53 +1,15 @@
 document.addEventListener("DOMContentLoaded", async () => {
   await cargarFotos();
 
-  const form = document.getElementById("formSubir");
-  if (form) {
-    form.addEventListener("submit", subirFoto);
-  }
-
   const botonDescargarTodo = document.getElementById("descargarTodo");
-  if (botonDescargarTodo) {
+  if (botonDescargarTodo)
     botonDescargarTodo.addEventListener("click", descargarTodas);
-  }
+
+  const botonAgregarTema = document.getElementById("agregarTema");
+  if (botonAgregarTema)
+    botonAgregarTema.addEventListener("click", agregarTema);
 });
 
-async function subirFoto(e) {
-  e.preventDefault();
-  const form = e.target;
-  const inputFile = form.querySelector('input[type="file"]');
-  const estado = document.getElementById("estadoSubida");
-  const boton = form.querySelector("button");
-
-  if (!inputFile.files.length) return alert("Seleccioná una foto primero 😄");
-
-  const formData = new FormData(form);
-  estado.textContent = "📤 Subiendo foto...";
-  boton.disabled = true;
-
-  try {
-    const res = await fetch("/upload", { method: "POST", body: formData });
-    const data = await res.json();
-
-    if (data.success) {
-      estado.textContent = "✅ Foto subida con éxito 🎉";
-      inputFile.value = "";
-      setTimeout(() => {
-        estado.textContent = "";
-        cargarFotos();
-      }, 2000);
-    } else {
-      estado.textContent = "❌ Error al subir la foto";
-    }
-  } catch (error) {
-    console.error(error);
-    estado.textContent = "❌ Error al subir la foto";
-  } finally {
-    boton.disabled = false;
-  }
-}
-
-// 🔹 Cargar galería
 async function cargarFotos() {
   const galeria = document.getElementById("galeria");
   if (!galeria) return;
@@ -79,50 +41,62 @@ async function cargarFotos() {
       contenedor.appendChild(botonDescargar);
       galeria.appendChild(contenedor);
     });
-  } catch (error) {
-    galeria.innerHTML = "<p>Error al cargar las fotos 😢</p>";
+  } catch (err) {
+    galeria.innerHTML = "<p>Error cargando fotos 😢</p>";
   }
 }
 
-// 🔹 Descargar individual
 function descargarFoto(url, index) {
   fetch(url)
-    .then((r) => r.blob())
+    .then((res) => res.blob())
     .then((blob) => {
-      const a = document.createElement("a");
-      const nombre = `foto_${new Date().toISOString().split("T")[0]}_${index + 1}_${Math.floor(
-        Math.random() * 10000
-      )}.jpg`;
-      a.href = URL.createObjectURL(blob);
-      a.download = nombre;
-      a.click();
-      URL.revokeObjectURL(a.href);
+      const enlace = document.createElement("a");
+      const fecha = new Date().toISOString().split("T")[0];
+      enlace.href = URL.createObjectURL(blob);
+      enlace.download = `foto_${fecha}_${index + 1}.jpg`;
+      enlace.click();
+      URL.revokeObjectURL(enlace.href);
     });
 }
 
-// 🔹 Descargar todas
 async function descargarTodas() {
   const res = await fetch("/fotos");
   const fotos = await res.json();
-  if (!fotos.length) return alert("No hay fotos para descargar 😢");
 
   for (let i = 0; i < fotos.length; i++) {
     await new Promise((resolve) => {
-      fetch(fotos[i])
-        .then((r) => r.blob())
-        .then((blob) => {
-          const a = document.createElement("a");
-          const nombre = `foto_${new Date().toISOString().split("T")[0]}_${i + 1}_${Math.floor(
-            Math.random() * 10000
-          )}.jpg`;
-          a.href = URL.createObjectURL(blob);
-          a.download = nombre;
-          a.click();
-          URL.revokeObjectURL(a.href);
-          setTimeout(resolve, 400);
-        })
-        .catch(() => resolve());
+      descargarFoto(fotos[i], i);
+      setTimeout(resolve, 400);
     });
   }
-  alert("✅ Todas las fotos fueron descargadas 🎉");
+}
+
+async function agregarTema() {
+  const input = document.getElementById("inputTema");
+  const mensaje = document.getElementById("mensajeTema");
+  const texto = input.value.trim();
+
+  if (!texto) {
+    mensaje.textContent = "⚠️ Escribí un tema.";
+    return;
+  }
+
+  try {
+    const res = await fetch("/tema", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ texto })
+    });
+
+    const data = await res.json();
+
+    if (res.status === 200) {
+      mensaje.textContent = "✅ Tema agregado!";
+      input.value = "";
+    } else {
+      mensaje.textContent = data.error || "❌ Error al agregar tema";
+    }
+  } catch {
+    mensaje.textContent = "❌ Error al conectar con el servidor.";
+  }
 }

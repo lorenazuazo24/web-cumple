@@ -1,0 +1,13 @@
+doctype html
+html(lang="es")
+  head
+    meta(charset="UTF-8")
+    meta(name="viewport", content="width=device-width, initial-scale=1.0")
+    title Temas del cumple 🎵
+    link(rel="stylesheet", href="/style.css")
+  body
+    h1 🎶 Temas que no pueden faltar 🎶
+    ul
+      each tema in temas
+        li= tema.texto
+    a(href="/") ⬅ Volver al inicio
