@@ -32,7 +32,7 @@ async function cargarFotos() {
       // 🔹 Botón para descargar individualmente
       const botonDescargar = document.createElement("button");
       botonDescargar.classList.add("descargar-btn");
-      botonDescargar.textContent = "⬇ Descargar esta foto";
+      botonDescargar.textContent = "⬇ Descargar foto";
 
       botonDescargar.onclick = () => descargarFoto(url, index);
 
