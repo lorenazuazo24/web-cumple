@@ -244,33 +244,82 @@ a:hover {
 }
 
 /* 🔹 Responsivo (celulares) */
+/* 🔹 Responsivo (celulares) */
 @media (max-width: 768px) {
+
+  /* 🔹 Título general */
   h1 {
     font-size: 2rem;
+    margin-top: 40px;
   }
 
+  /* 🔹 Título “Subí tu foto” */
   #tituloSubir {
     font-size: 2.3rem;
-    margin-top: 60px;
+    margin-top: 20px; /* 🔸 Más arriba */
+    margin-bottom: 20px;
+    text-align: center;
   }
 
+  /* 🔹 QR más chico */
   #qr {
     width: 180px;
     height: 180px;
   }
 
+  /* 🔹 Espacio entre la cara y el formulario */
+  form {
+    margin-top: 100px; /* 🔸 Baja el bloque del formulario */
+  }
+
+  input[type="file"] {
+    width: 90%;
+    font-size: 1.1rem;
+    font-weight: bold;
+    border: 2px solid #000;
+    border-radius: 10px;
+    padding: 12px 16px;
+    background-color: #fff;
+  }
+
+  form button {
+    font-size: 1.1rem;
+    padding: 12px 22px;
+    background-color: #000;
+    border-radius: 10px;
+  }
+
+  a[href="/"] {
+    margin-top: 25px;
+    display: inline-block;
+    background-color: #000;
+    color: white;
+    padding: 12px 22px;
+    border-radius: 10px;
+    text-decoration: none;
+    font-weight: bold;
+  }
+
+  a[href="/"]:hover {
+    background-color: #333;
+    transform: scale(1.05);
+  }
+
+  /* 🔹 QR container ajustado */
   #qrContainer {
     margin-top: 260px;
   }
 
+  /* 🔹 Botones generales */
   button {
     font-size: 1rem;
     padding: 14px 24px;
   }
 
-    #btnSubirManual {
+  /* 🔹 Botón “Subir fotos” arriba */
+  #btnSubirManual {
     top: 10px;
     font-size: 0.9rem;
     padding: 10px 18px;
-    }
+  }
 }
