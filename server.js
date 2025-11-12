@@ -49,7 +49,9 @@ app.get("/subir", (req, res) => res.render("subir"));
 // Endpoint de subida a Cloudinary
 app.post("/upload", upload.single("foto"), async (req, res) => {
   try {
-    const result = await cloudinary.uploader.upload(req.file.path);
+   const result = await cloudinary.uploader.upload(req.file.path, {
+    folder: "cumple-romi"
+    });
     console.log("✅ Foto subida:", result.secure_url);
     res.redirect("/");
   } catch (error) {
