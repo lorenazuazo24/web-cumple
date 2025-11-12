@@ -64,8 +64,9 @@ app.post("/upload", upload.single("foto"), async (req, res) => {
 app.get("/fotos", async (req, res) => {
   try {
     const resources = await cloudinary.api.resources({
-      type: "upload",
-      max_results: 50 // cuántas querés listar
+    type: "upload",
+    prefix: "cumple-romi/", // 🔹 Filtra solo tu carpeta
+    max_results: 50
     });
 
     const urls = resources.resources.map(r => r.secure_url);
