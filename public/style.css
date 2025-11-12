@@ -166,7 +166,7 @@ h2 {
 #btnSubirManual {
   position: absolute;
   top: 20px;
-  left: 50%;
+  left: 40%;
   transform: translateX(-50%);
   background-color: #000;
   color: white;
