@@ -1,0 +1,10 @@
+{
+  "name": "cumple-romi",
+  "type": "module",
+  "dependencies": {
+    "express": "^4.21.2",
+    "multer": "^1.4.5-lts.1",
+    "pug": "^3.0.3",
+    "qrcode": "^1.5.4"
+  }
+}

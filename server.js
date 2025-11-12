@@ -1,44 +1,49 @@
 import express from "express";
 import multer from "multer";
 import path from "path";
-import fs from "fs";
+import { fileURLToPath } from "url";
 import QRCode from "qrcode";
+import fs from "fs";
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 const app = express();
-const PORT = 3000;
+const PORT = process.env.PORT || 3000;
 
-// Carpeta pública
-app.use(express.static("public"));
-app.use("/uploads", express.static("uploads"));
+// configuración de vistas
+app.set("view engine", "pug");
+app.set("views", path.join(__dirname, "views"));
 
-// Configuración de multer
+// archivos estáticos
+app.use(express.static(path.join(__dirname, "public")));
+app.use("/uploads", express.static(path.join(__dirname, "public", "uploads")));
+
+// configuración de multer
 const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    cb(null, "uploads/");
-  },
-  filename: (req, file, cb) => {
-    cb(null, Date.now() + path.extname(file.originalname));
-  },
+  destination: "./public/uploads",
+  filename: (req, file, cb) => cb(null, Date.now() + path.extname(file.originalname))
 });
 const upload = multer({ storage });
 
-// Endpoint para subir fotos
-app.post("/upload", upload.single("foto"), (req, res) => {
-  res.redirect("/"); // vuelve al home después de subir
+// genera el QR para la página de subida
+app.get("/", async (req, res) => {
+  const urlSubida = `${req.protocol}://${req.get("host")}/subir`;
+  const qr = await QRCode.toDataURL(urlSubida); // genera base64
+  res.render("index", { qr });
 });
 
-// Endpoint que lista fotos
+// página de subida
+app.get("/subir", (req, res) => res.render("subir"));
+
+// endpoint de subida
+app.post("/upload", upload.single("foto"), (req, res) => res.redirect("/"));
+
+// lista de fotos
 app.get("/fotos", (req, res) => {
-  const files = fs.readdirSync("uploads");
-  const urls = files.map((file) => `/uploads/${file}`);
-  res.json(urls);
+  const dir = path.join(__dirname, "public/uploads");
+  const files = fs.existsSync(dir) ? fs.readdirSync(dir) : [];
+  res.json(files);
 });
 
-// Generar QR dinámico para la página de subida
-app.get("/qr", async (req, res) => {
-  const url = `${req.protocol}://${req.get("host")}/subir.html`;
-  const qr = await QRCode.toDataURL(url);
-  res.json({ qr });
-});
-
-app.listen(PORT, () => console.log(`🎂 Cumple Romi activo en http://localhost:${PORT}`));
+app.listen(PORT, () => console.log(`Servidor corriendo en http://localhost:${PORT}`));
