@@ -27,13 +27,11 @@ async function cargarFotos() {
 
       const img = document.createElement("img");
       img.src = url;
-      img.alt = `Foto ${index + 1} del cumple`;
+      img.alt = `Foto ${index + 1}`;
 
-      // 🔹 Botón para descargar individualmente
       const botonDescargar = document.createElement("button");
       botonDescargar.classList.add("descargar-btn");
       botonDescargar.textContent = "⬇ Descargar foto";
-
       botonDescargar.onclick = () => descargarFoto(url, index);
 
       contenedor.appendChild(img);
@@ -46,7 +44,7 @@ async function cargarFotos() {
   }
 }
 
-// 🔹 Descargar una sola foto con nombre único
+// 🔹 Descargar una foto con nombre único
 function descargarFoto(url, index) {
   fetch(url)
     .then((response) => response.blob())
@@ -61,7 +59,7 @@ function descargarFoto(url, index) {
       enlace.click();
       URL.revokeObjectURL(enlace.href);
     })
-    .catch((err) => console.error("Error al descargar la imagen:", err));
+    .catch((err) => console.error("Error al descargar imagen:", err));
 }
 
 // 🔹 Descargar todas las fotos
@@ -90,7 +88,7 @@ async function descargarTodas() {
             enlace.download = nombreUnico;
             enlace.click();
             URL.revokeObjectURL(enlace.href);
-            setTimeout(resolve, 400); // pequeña pausa entre descargas
+            setTimeout(resolve, 400);
           })
           .catch((err) => {
             console.error("Error descargando una foto:", err);

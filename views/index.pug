@@ -8,18 +8,14 @@ html(lang="es")
   body
     h1 🎉 Cumple Romi 🎉
 
-    // Contenedor del QR centrado
-    #qrContainer
-      p Escaneá el QR para subir tus fotos
-      img#qr(src=qr alt="QR para subir fotos")
+    // 🔹 Formulario para subir foto
+    form(action="/upload", method="POST", enctype="multipart/form-data")
+      input(type="file", name="foto", accept="image/*", required)
+      button(type="submit") ⬆ Subir foto
 
-    // Sección de galería
-    .seccion-galeria
-      h2 Galería
-      button#descargarTodo Descargar todas las fotos 📦
-      #galeria.galeria
-
-    // Botón flotante para subir fotos sin QR
-    a#btnSubirManual(href="/subir") 📤 Subí tus fotos
+    // 🔹 Galería de imágenes
+    h2 Galería
+    button#descargarTodo Descargar todas las fotos 📦
+    #galeria.galeria
 
     script(src="/script.js")

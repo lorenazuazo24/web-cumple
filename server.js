@@ -2,14 +2,11 @@ import express from "express";
 import multer from "multer";
 import path from "path";
 import { fileURLToPath } from "url";
-import QRCode from "qrcode";
 import dotenv from "dotenv";
 import { v2 as cloudinary } from "cloudinary";
 
-// Cargar variables de entorno
 dotenv.config();
 
-// Configurar Cloudinary
 cloudinary.config({
   cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
   api_key: process.env.CLOUDINARY_API_KEY,
@@ -22,35 +19,27 @@ const __dirname = path.dirname(__filename);
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// Configuración de vistas
 app.set("view engine", "pug");
 app.set("views", path.join(__dirname, "views"));
-
-// Archivos estáticos (CSS, JS, etc.)
 app.use(express.static(path.join(__dirname, "public")));
 
-// Configuración de multer (solo para recibir el archivo antes de subirlo a Cloudinary)
 const storage = multer.diskStorage({
-  destination: "./tmp", // carpeta temporal
-  filename: (req, file, cb) => cb(null, Date.now() + path.extname(file.originalname))
+  destination: "./tmp",
+  filename: (req, file, cb) =>
+    cb(null, Date.now() + path.extname(file.originalname))
 });
 const upload = multer({ storage });
 
-// Genera el QR para la página de subida
+// 🔹 Página principal (galería + subida)
 app.get("/", async (req, res) => {
-  const urlSubida = `${req.protocol}://${req.get("host")}/subir`;
-  const qr = await QRCode.toDataURL(urlSubida); // genera QR base64
-  res.render("index", { qr });
+  res.render("index");
 });
 
-// Página de subida
-app.get("/subir", (req, res) => res.render("subir"));
-
-// Endpoint de subida a Cloudinary
+// 🔹 Subir imagen
 app.post("/upload", upload.single("foto"), async (req, res) => {
   try {
-   const result = await cloudinary.uploader.upload(req.file.path, {
-    folder: "cumple-romi"
+    const result = await cloudinary.uploader.upload(req.file.path, {
+      folder: "cumple-romi"
     });
     console.log("✅ Foto subida:", result.secure_url);
     res.redirect("/");
@@ -60,16 +49,15 @@ app.post("/upload", upload.single("foto"), async (req, res) => {
   }
 });
 
-// Lista de fotos (Cloudinary)
+// 🔹 Obtener fotos
 app.get("/fotos", async (req, res) => {
   try {
     const resources = await cloudinary.api.resources({
-    type: "upload",
-    prefix: "cumple-romi/", // 🔹 Filtra solo tu carpeta
-    max_results: 50
+      type: "upload",
+      prefix: "cumple-romi/",
+      max_results: 100
     });
-
-    const urls = resources.resources.map(r => r.secure_url);
+    const urls = resources.resources.map((r) => r.secure_url);
     res.json(urls);
   } catch (error) {
     console.error("Error al obtener imágenes de Cloudinary:", error);
@@ -77,5 +65,6 @@ app.get("/fotos", async (req, res) => {
   }
 });
 
-// Inicia el servidor
-app.listen(PORT, () => console.log(`🚀 Servidor corriendo en http://localhost:${PORT}`));
+app.listen(PORT, () =>
+  console.log(`🚀 Servidor corriendo en http://localhost:${PORT}`)
+);
