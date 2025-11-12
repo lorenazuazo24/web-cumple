@@ -1,0 +1,39 @@
+body {
+  background: #fff5f8;
+  font-family: 'Poppins', sans-serif;
+  text-align: center;
+  color: #ff4b81;
+}
+
+h1 {
+  font-size: 2.5rem;
+  margin-top: 20px;
+}
+
+#qrContainer {
+  margin: 20px auto;
+}
+
+#qr {
+  width: 180px;
+  height: 180px;
+  border: 5px solid #ff4b81;
+  border-radius: 10px;
+}
+
+.galeria {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 10px;
+  margin: 30px auto;
+  width: 90%;
+}
+
+.galeria img {
+  width: 180px;
+  height: 180px;
+  object-fit: cover;
+  border-radius: 12px;
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.2);
+}
