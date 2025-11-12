@@ -22,22 +22,33 @@ async function cargarFotos() {
     }
 
     fotos.reverse().forEach((url) => {
-      const cont = document.createElement("div");
-      cont.className = "foto-container";
+    const contenedor = document.createElement("div");
+    contenedor.classList.add("foto-container");
 
-      const img = document.createElement("img");
-      img.src = url;
-      img.alt = "Foto del cumple";
+    const img = document.createElement("img");
+    img.src = url;
+    img.alt = "Foto del cumple";
 
-      const boton = document.createElement("button");
-      boton.className = "descargar-btn";
-      boton.textContent = "⬇ Descargar esta foto";
-      boton.addEventListener("click", () => descargarFoto(url));
+    const botonDescargar = document.createElement("button");
+    botonDescargar.classList.add("descargar-btn");
+    botonDescargar.textContent = "⬇ Descargar esta foto";
 
-      cont.appendChild(img);
-      cont.appendChild(boton);
-      galeria.appendChild(cont);
+    botonDescargar.onclick = () => {
+        fetch(url)
+        .then((response) => response.blob())
+        .then((blob) => {
+            const enlace = document.createElement("a");
+            enlace.href = URL.createObjectURL(blob);
+            enlace.download = "foto_cumple.jpg";
+            enlace.click();
+        });
+    };
+
+    contenedor.appendChild(img);
+    contenedor.appendChild(botonDescargar);
+    galeria.appendChild(contenedor);
     });
+
   } catch (error) {
     console.error("Error cargando fotos:", error);
   }
