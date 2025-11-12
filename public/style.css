@@ -39,12 +39,12 @@ h1 {
 }
 
 /* FORM SUBIDA */
-form {
+form[action="/upload"] {
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 20px;
-  margin-top: 320px;
+  margin-top: 330px;   /* 🔹 Este baja SOLO el form de subir foto */
   margin-bottom: 40px;
 }
 
@@ -58,7 +58,7 @@ input[type="file"] {
   cursor: pointer;
 }
 
-form button {
+form[action="/upload"] button {
   background-color: #000;
   color: white;
   font-size: 1.1rem;
@@ -70,17 +70,16 @@ form button {
   transition: all 0.3s ease;
 }
 
-form button:hover {
+form[action="/upload"] button:hover {
   background-color: #333;
   transform: scale(1.05);
 }
 
 /* -----------------------
-   🔥 TEMAS (NUEVO ESTILO)
+   🔥 TEMAS (AJUSTADO)
 ------------------------*/
 .temas-wrapper {
-  margin-top: 40px;
-  margin-bottom: 50px;
+  margin-top: 20px;     /* 🔽 antes 30px */
   width: 100%;
 }
 
@@ -90,13 +89,13 @@ form button:hover {
   color: #d63384;
   text-transform: uppercase;
   text-shadow: 2px 2px 4px #fff;
-  margin-bottom: 20px;
+  margin-bottom: 5px;   /* 🔽 ANTES 20px — ahora súper cerca del input */
 }
 
 #formTemas {
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 6px;             /* 🔽 Antes 10px */
   align-items: center;
 }
 
@@ -119,7 +118,7 @@ form button:hover {
 
 #listaTemas {
   list-style: none;
-  margin-top: 20px;
+  margin-top: 10px;    /* 🔽 antes 20px */
   padding: 0;
   font-size: 1.2rem;
   font-weight: bold;
@@ -190,6 +189,67 @@ h2 {
   transform: scale(1.05);
 }
 
+.ver-lista {
+  display: inline-block;
+  margin-top: 10px;
+  font-size: 1.1rem;
+  font-weight: bold;
+  color: #d63384;
+  text-decoration: none;
+  padding: 8px 14px;
+  border-radius: 8px;
+  background: rgba(255,255,255,0.7);
+  transition: 0.3s;
+}
+
+.ver-lista:hover {
+  background: #d63384;
+  color: white;
+  transform: scale(1.05);
+}
+
+/* ---------- PÁGINA LISTA DE TEMAS ---------- */
+
+.temas-titulo-pagina {
+  font-size: 2.4rem;
+  font-weight: 900;
+  color: #d63384;
+  text-transform: uppercase;
+  text-shadow: 2px 2px 4px #fff;
+  margin-top: 40px;
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.temas-lista {
+  margin-top: 20px;
+  text-align: left;        /* ← alineado a la izquierda */
+  max-width: 500px;        /* para que quede prolijo en el centro */
+  margin-left: auto;
+  margin-right: auto;
+  font-weight: bold;       /* ← en negrita */
+  font-size: 1.2rem;
+  line-height: 1.8;
+}
+
+.boton-volver {
+  display: inline-block;
+  margin-top: 25px;
+  background-color: #000;  /* ← fondo negro */
+  color: white;            /* ← letra blanca */
+  padding: 12px 20px;
+  border-radius: 8px;
+  text-decoration: none;
+  font-weight: bold;
+  transition: 0.3s ease;
+}
+
+.boton-volver:hover {
+  background-color: #333;
+  transform: scale(1.05);
+}
+
+
 /* RESPONSIVO */
 @media (max-width: 768px) {
   h1 { font-size: 2rem; }
@@ -203,7 +263,9 @@ h2 {
     height: 180px;
   }
 
-  form { margin-top: 380px; }
+  form[action="/upload"] {
+    margin-top: 380px;
+  }
 
   #formTemas input {
     width: 90%;

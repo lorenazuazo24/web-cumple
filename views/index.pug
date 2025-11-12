@@ -23,6 +23,9 @@ html(lang="es")
         input(type="text", name="tema", placeholder="Escribí un tema...", required)
         button(type="submit") ➕ Agregar tema
 
+      // 🔹 LINK PARA VER TODOS LOS TEMAS
+      a.ver-lista(href="/temas-lista") 🎧 Ver todos los temas agregados
+
       ul#listaTemas
 
     // 🔹 GALERÍA
@@ -30,5 +33,4 @@ html(lang="es")
     button#descargarTodo Descargar todas las fotos 📦
     #galeria.galeria
 
-    script(src="/temas.js")
     script(src="/script.js")
