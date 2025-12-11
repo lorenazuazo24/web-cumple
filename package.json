@@ -1,6 +1,9 @@
 {
   "name": "cumple-romi",
   "type": "module",
+  "scripts": {
+    "start": "node server.js"
+  },
   "dependencies": {
     "cloudinary": "^2.8.0",
     "dotenv": "^17.2.3",
